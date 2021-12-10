@@ -2,15 +2,15 @@ import time
 
 yellow_piece = "🟡"  # player 1
 red_piece = "🔴"  # player 2
-empty = "⚫"
+empty_piece = "⚫"
 
 board = [
-    [empty, empty, empty, empty, empty, empty, empty],  # a
-    [empty, empty, empty, empty, empty, empty, empty],  # b
-    [empty, empty, empty, empty, empty, empty, empty],  # c
-    [empty, empty, empty, empty, empty, empty, empty],  # d
-    [empty, empty, empty, empty, empty, empty, empty],  # e
-    [empty, empty, empty, empty, empty, empty, empty],  # f
+    [empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece],  # a
+    [empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece],  # b
+    [empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece],  # c
+    [empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece],  # d
+    [empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece],  # e
+    [empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece, empty_piece],  # f
 ]
 
 
@@ -53,10 +53,10 @@ def pre_start():
 
 
 def ask_for_ready():
-    ready = input("Are both players ready to begin the game? (YES/NO) (Y/N) ")
-    if ready.lower().__contains__("y"):
+    is_ready = input("Are both players ready to begin the game? (YES/NO) (Y/N) ")
+    if is_ready.lower().__contains__("y"):
         begin_game()
-    elif ready.lower().__contains__("n"):
+    elif is_ready.lower().__contains__("n"):
         print("Giving 10 seconds for preparation...")
         time.sleep(10)
         ask_for_ready()
@@ -72,36 +72,36 @@ def begin_game():
     player_two = input(f"Please state the name of player 2 '{red_piece}': ")
 
     print_game_board()
-    i = 0
-    while i < 43:
-        if i % 2 == 0:
+    player_choosing = 0
+    while player_choosing < 43:
+        if player_choosing % 2 == 0:
             input_column = get_correct_integer(player_one)
 
             if add_piece(yellow_piece, input_column) == 0:
-                i = i - 1
+                player_choosing = player_choosing - 1
 
-        elif i % 2 == 1:
+        elif player_choosing % 2 == 1:
             input_column = get_correct_integer(player_two)
 
             if add_piece(red_piece, input_column) == 0:
-                i = i - 1
+                player_choosing = player_choosing - 1
         if check_board(player_one, player_two) != "":
             final_winner = check_board(player_one, player_two)
             complete_game(final_winner)
             break
-        i = i + 1
+        player_choosing = player_choosing + 1
 
 
 def get_correct_integer(player_name):
     try:
-        num = int(input(f"{player_name.title()}, please choose a column between 1 and 7. (1, 2, 3, 4, 5, 6, 7): "))
+        chosen_column = int(input(f"{player_name.title()}, please choose a column between 1 and 7. (1, 2, 3, 4, 5, 6, 7): "))
 
-        if num > 7 or num < 1:
+        if chosen_column > 7 or chosen_column < 1:
             print("That is not a number in the range of 1-7")
 
             return get_correct_integer(player_name)
         else:
-            return num
+            return chosen_column
     except ValueError:
         print("That is not a valid number!")
         return get_correct_integer(player_name)
@@ -116,16 +116,16 @@ def print_game_board():
     print(" ━━━━━━━━━━━━━━━━▼━━━━━━━━━━━━━━━━")
 
 
-def add_piece(piece, number):
-    k = 5
-    while k >= 0:
-        if board[k][number - 1].__contains__(empty):
-            board[k][number - 1] = piece
+def add_piece(piece, column):
+    row_counter = 5
+    while row_counter >= 0:
+        if board[row_counter][column - 1].__contains__(empty_piece):
+            board[row_counter][column - 1] = piece
             print_game_board()
             break
-        k = k - 1
+        row_counter = row_counter - 1
 
-    if k < 0:
+    if row_counter < 0:
         print("\n\n\nSorry, that row is already full! Please pick another row\n\n\n")
         return 0
 
@@ -192,16 +192,16 @@ def complete_game(winner):
 
     print(f"\n\n✨{winner} has won the game!✨")
 
-    ready = input("Would you like to play again! (YES/NO) (Y/N) ")
-    if ready.lower().__contains__("y"):
+    is_ready = input("Would you like to play again! (YES/NO) (Y/N) ")
+    if is_ready.lower().__contains__("y"):
 
-        for i in range(6):
-            for j in range(7):
-                board[i][j] = empty
+        for row in range(6):
+            for column in range(7):
+                board[row][column] = empty_piece
 
         ask_for_ready()
 
-    elif ready.lower().__contains__("n"):
+    elif is_ready.lower().__contains__("n"):
         print(f"If you enjoyed the game, plspls give us a 7!")
 
         time.sleep(2)
@@ -218,4 +218,4 @@ def complete_game(winner):
         print(" ╚═════╝  ╚════╝  ╚════╝ ╚═════╝ ╚═════╝    ╚═╝   ╚══════╝")
 
 
-begin_game()
+pre_start()
