@@ -10,7 +10,6 @@ all_users.append(admin)
 def seperator():
     print(" ═ ═ ═ ═   ⋆ ★ ⋆   ═ ═ ═ ═")
 
-
 def start_app():
     print(" ═ ═ ═ ═   ⋆ ★ ⋆   ═ ═ ═ ═")
     print("Welcome to the login dashboard!!")
