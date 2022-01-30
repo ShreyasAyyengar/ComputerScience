@@ -1,6 +1,8 @@
 # CreativeLogins - Written By Shreyas * Takao (Py-3.9)
-# Git -
+# Git - https://github.com/ShreyasAyyengar/ComputerScience/blob/master/Projects/Login_System.py
 
+
+# Import all relevant libraries
 import datetime
 import time as thread
 import json
@@ -11,18 +13,20 @@ from difflib import SequenceMatcher
 from datetime import date
 import random
 
-thread.sleep(2)
-
+# Define main dictionary
 all_users = []
 
 
 # <Runtime functions>
+
+# Does not do any heavy: calculations, searching, data reading/writing
+# Handles frontend input/output
+
 def register_login_system():
-    append_admin()
+    append_admin()  # Adds an admin user to the all users list
 
     if not create_file():
         load_data()
-    pass
 
 
 def open_main_ui():
@@ -38,44 +42,51 @@ def open_main_ui():
     print(" ═ ═ ═ ═   ⋆ ★ ⋆   ═ ═ ═ ═")
     print("Written by Takao & Shreyas")
 
-    u_choice = int(input("Please Select an Option: "))
+    try:
+        u_choice = int(input("Please Select an Option: "))
 
-    if u_choice == 1:
-        start_authentication()
+        if u_choice == 1:
+            start_authentication()
 
-    elif u_choice == 2:
-        print("Thank you for choosing to register!")
-        start_registration()
+        elif u_choice == 2:
+            print("Thank you for choosing to register!")
+            start_registration()
 
-    elif u_choice == 3:
-        start_account_deletion()
+        elif u_choice == 3:
+            start_account_deletion()
 
-    elif u_choice == 4:
-        start_password_reset()
+        elif u_choice == 4:
+            start_password_reset()
 
-    elif u_choice == 99:
-        close_program()
+        elif u_choice == 99:
+            close_program()
+
+    except ValueError:
+        print("That was not a valid option!")
+        thread.sleep(1.5)
+        open_main_ui()
 
 
 def start_authentication():
     username = input("Please enter your username: ")
     if is_username(username):
 
-        for user in all_users:
+        for user in all_users:  # Loop through all registered users
             if user['username'].lower() == username.lower():
                 if ask_for_password(username):
-                    print("Welcome to the homepage! Here is a cookie 🍪")
+                    print("Login successful!")
+                    after_login_ui()
 
     else:
         print(" ═ ═ ═ ═   ⋆ ★ ⋆   ═ ═ ═ ═")
         print("That user does not exist! If you would like to create an account press 2")
-        thread.sleep(3)
+        thread.sleep(3)  # Pause the code for visual effect
         open_main_ui()
 
 
 def ask_for_password(user):
-    authentication_tries = 0
-    is_correct_pass = False
+    authentication_tries = 0  # Counter for how many failed attempts
+    is_correct_pass = False  # Simple flag boolean used for while loop control statement
 
     while not is_correct_pass and authentication_tries < 3:
         password_to_match = input("Please enter your password: ")
@@ -84,16 +95,16 @@ def ask_for_password(user):
             if looped_user['username'].lower() == user.lower():
 
                 if looped_user['password'].lower() == password_to_match.lower():
-                    return True
+                    return True  # Return that the password they entered was the correct one!
                 else:
-                    authentication_tries = authentication_tries + 1
+                    authentication_tries = authentication_tries + 1  # Add a failed attempt
 
-                    if authentication_tries == 3:
+                    if authentication_tries == 3:  # Reach attempt limit
                         print(
                             "You have been locked out of the login system for 1 (one) minute with three (3) incorrect tries "
                             "for authentication...")
                         thread.sleep(5)  # 5 seconds only for demonstration purposes
-                        open_main_ui()
+                        open_main_ui()  # Opens back the main UI
                     else:
                         print("Incorrect Password! Please try again:")
 
@@ -102,6 +113,8 @@ def start_registration():
     u_username = input("Please enter your desired username: ")
 
     validated = False
+
+    # Flag booleans for while statements
 
     email_validated = False
     age_validated = False
@@ -112,7 +125,12 @@ def start_registration():
             u_password = input("Please choose a password: ")
             password_callback = approve_password(u_password)
 
-            if password_callback[0]:
+            # A function callback may look like this:
+            # [False, 'Length should be greater than 6 characters!',
+            # 'Password should have at least one numeral!', 'Password should have at least one uppercase letter!',
+            # 'Password should contain at least one special character!']
+
+            if password_callback[0]:  # This will access the first index in the callback either 'True' or 'False'
 
                 while not email_validated:
                     u_email = input("Please enter a valid email address that belongs to you: ")
@@ -126,7 +144,7 @@ def start_registration():
 
                             if age_callback[0]:
                                 create_user(u_username, u_password, u_age, u_email)
-                                print("ALL USERS:" + all_users.__str__())
+                                validated = True
                                 print(" ═ ═ ═ ═   ⋆ ★ ⋆   ═ ═ ═ ═")
                                 print(f"Your account with the username '{u_username.title()}' has now been created!")
                                 print(" ═ ═ ═ ═   ⋆ ★ ⋆   ═ ═ ═ ═")
@@ -142,7 +160,7 @@ def start_registration():
                         print("That is not a valid email address, please try again!")
 
             else:
-                for i in range(len(password_callback)):
+                for i in range(len(password_callback)):  # Print all reasons for failed password creation
                     if i != 0:
                         print(password_callback[i])
 
@@ -158,10 +176,10 @@ def start_account_deletion():
         if ask_for_password(u_username):
             thread.sleep(0.3)
             print("⛔︎⚠️⛔︎⚠️⛔︎⚠️⛔︎⚠️⛔︎⚠️")
-            thread.sleep(0.3)
+            thread.sleep(0.3)  # Animations
             print("IF YOUR ACCOUNT IS TERMINATED, THE INFORMATION ASSOCIATED CANNOT BE RECOVERED")
             print(f"PLEASE CONFIRM THE TERMINATION OF THE ACCOUNT {u_username} BY TYPING 'CONFIRM'")
-            thread.sleep(0.3)
+            thread.sleep(0.3)  # Animations
             print("⛔︎⚠️⛔︎⚠️⛔︎⚠️⛔︎⚠️⛔︎⚠️")
             thread.sleep(0.3)
 
@@ -175,7 +193,7 @@ def start_account_deletion():
 def start_password_reset():
     u_user = input("Please enter your username: ")
 
-    valid_pass = False
+    valid_pass = False  # Flag boolean for while loop, stays false until the new password is valid
 
     if is_username(u_user):
 
@@ -185,9 +203,11 @@ def start_password_reset():
                 current_password = looped_user['password'].lower()
                 previous_password = input("Please enter your previous password as best as you can remember: ")
 
+                #  Uses a SequenceMatcher to determine character accuracy (between 0.0 and 1.0)
                 percentage_match = SequenceMatcher(None, current_password, previous_password).ratio()
+                print(percentage_match)
 
-                if percentage_match >= 0.8:
+                if percentage_match >= 0.8:  # Deemed to have greate accuracy
                     print("The password you entered was very similar to your current password. Proceeding to "
                           "password reset...")
                     thread.sleep(1)
@@ -198,7 +218,7 @@ def start_password_reset():
 
                         if password_callback[0]:
                             print(f"Success! Your password for the username {u_user} has been updated!")
-                            looped_user['password'] = new_pass
+                            looped_user['password'] = new_pass  # Set new password in dictionary
                             thread.sleep(1)
                             after_login_ui()
                             break
@@ -208,7 +228,7 @@ def start_password_reset():
                                 if i != 0:
                                     print(password_callback[i])
 
-                else:
+                else:  # Deemed not to be accurate
                     print("Sorry, we couldn't deem that you are the owner of the account.")
                     thread.sleep(1)
                     open_main_ui()
@@ -303,94 +323,125 @@ def play_RPS():
 
 
 def close_program():
-    # goodbye output
+    # Goodbye output and program disabling
+
+    thread.sleep(1.5)
+    print(" ██████╗  █████╗  █████╗ ██████╗ ██████╗ ██╗   ██╗███████╗")
+    thread.sleep(0.25)
+    print("██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝██╔════╝")
+    thread.sleep(0.25)
+    print("██║  ██╗ ██║  ██║██║  ██║██║  ██║██████╦╝ ╚████╔╝ █████╗  ")
+    thread.sleep(0.25)
+    print("██║  ╚██╗██║  ██║██║  ██║██║  ██║██╔══██╗  ╚██╔╝  ██╔══╝  ")
+    thread.sleep(0.3)
+    print("╚██████╔╝╚█████╔╝╚█████╔╝██████╔╝██████╦╝   ██║   ███████╗")
+    thread.sleep(0.25)
+    print(" ╚═════╝  ╚════╝  ╚════╝ ╚═════╝ ╚═════╝    ╚═╝   ╚══════╝")
+
     write_and_truncate_data()
 
 
 # <Back End Functions>
 def create_user(username, password, age, email):
+    #  Creates a new user object from the {username, password, age, email}
     new_user = {"username": username, "password": password, "age": age, "email": email}
-    all_users.append(new_user)
+    all_users.append(new_user)  # Appends the new user object into the dictionary
 
 
 def remove_user(user):
+    # Loops through all users until it finds the object with the username the same as the parameter
     for looped_user in all_users:
         if looped_user['username'].lower() == user.lower():
-            all_users.remove(looped_user)
+            all_users.remove(looped_user)  # Remove object from dictionary
 
 
 def is_username(parsed_username):
+    # Loops through all users until it finds the object with the username the same as the parameter
     for user in all_users:
         if user['username'].lower() == parsed_username.lower():
+            # If a user object with the same username as the parameter, return boolean 'True'
             return True
         else:
+            # If no user object found, continue looping to check for it
             continue
 
+    # If absolutely no user was found, return boolean 'False' (no user exists with the name)
     return False
 
 
 def is_valid_age(age):
     try:
-        int_age = int(age)
+        int_age = int(age)  # Cast String age as an integer
 
-        if int_age <= 0:
+        if int_age <= 0:  # Age cannot be less than 0
             return False, "That is not a valid age!"
-        if 0 <= int_age <= 13:
+        if 0 <= int_age <= 13:  # Must be at least 14 to use
             return False, "You must be at least 14 years old to register"
 
         return age
 
-    except ValueError:
+    except ValueError:  # Could not parse String as int: {sixteen, forty, banana}
         return False, "Please type a number!"
 
 
 def approve_password(password_to_approve):
+    # A list of approved special symbols
     special_symbols = ["\"", "!", "#", "$" "%", "&", "'", "(", ")", "*", "+", "-", ".", "/", ":", ";", "<", "=", ">",
                        "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"]
-    val = [True]
+    val = [True]  # initial approval (defaulted to True)
 
+    # Pass must be more than 6 chars
     if len(password_to_approve) < 6:
         val[0] = False
         val.append("Length should be greater than 6 characters!")
 
+    # Pass must be less than 6 chars
     if len(password_to_approve) > 30:
         val[0] = False
         val.append("Length should be not be greater than 30 characters!")
 
+    # Pass must contain a digit
     if not any(char.isdigit() for char in password_to_approve):
         val[0] = False
         val.append("Password should have at least one numeral!")
 
+    # Pass must contain an UPPERCASE char
     if not any(char.isupper() for char in password_to_approve):
         val[0] = False
         val.append("Password should have at least one uppercase letter!")
 
+    # PASS MUST CONTAIN lowercase CHAR
     if not any(char.islower() for char in password_to_approve):
         val[0] = False
         val.append("Password should have at least one lowercase letter!")
 
+    # Pass must contain special char from the special_symbols list
     if not any(char in special_symbols for char in password_to_approve):
         val[0] = False
         val.append("Password should contain at least one special character!")
 
+    # Return the callback (list) values of 'val'
     return val
 
 
 def approve_email(email_to_approve):
+    # Special Email Format
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
     val = []
 
-    if re.fullmatch(regex, email_to_approve):
+    if re.fullmatch(regex, email_to_approve):  # Does the string of email match the regex requirements
         val.append(True)
     else:
         val.append(False)
         val.append("That is not a valid email!")
 
+    # Return callback
     return val
 
 
 def append_admin():
+    # Appends a default user object of type administrator
     all_users.append({'username': "admin", 'password': "0", 'age': -1, 'email': "admin@creativelogins.com"})
 
 
@@ -423,6 +474,6 @@ def create_file():
 # ---------------------------------------
 
 register_login_system()
-after_login_ui()
+open_main_ui()
 
 # Add games to after login process
