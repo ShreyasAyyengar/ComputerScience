@@ -17,6 +17,7 @@ board = [
 
 
 def pre_start():
+    print("THIS IS BEING RAN")
     print("Loading game...")
     time.sleep(1.5)
 
